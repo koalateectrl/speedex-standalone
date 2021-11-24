@@ -10,7 +10,7 @@
       "sellasset": {
         "type": "USDT",
         "amount": 10,
-        "limitPrice": 3
+        "limitPrice": 12
       }
     },
     {
@@ -23,8 +23,35 @@
       "sellasset": {
         "type": "USDT",
         "amount": 10,
+        "limitPrice": 8
+      }
+    },
+    {
+      "txid": 3,
+      "buyasset": {
+        "type": "ETH",
+        "amount": 5,
+        "limitPrice": 2
+      },
+      "sellasset": {
+        "type": "USDT",
+        "amount": 5,
         "limitPrice": 3
       }
+    },
+    {
+      "txid": 4,
+      "buyasset": {
+        "type": "USDT",
+        "amount": 8,
+        "limitPrice": 2
+      },
+      "sellasset": {
+        "type": "ETH",
+        "amount": 50,
+        "limitPrice": 47
+      }
     }
+
   ]
 }
