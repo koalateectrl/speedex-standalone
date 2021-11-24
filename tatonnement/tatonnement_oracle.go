@@ -1,19 +1,19 @@
 package tatonnement
 
+import (
+	"fmt"
+
+	"github.com/sandymule/speedex-standalone/orderbook"
+)
+
 type TatonnementOracle struct {
-	str1   string
-	str2   string
-	Params ControlParams
+	Params            ControlParams
+	MOrderbookManager orderbook.OrderbookManager
 }
 
-func (to *TatonnementOracle) SetStr1(newstr1 string) { // setter
-	to.str1 = newstr1
-}
-
-func (to *TatonnementOracle) SetStr2(newstr2 string) { // setter
-	to.str2 = newstr2
-}
-
-func (to *TatonnementOracle) String() string {
-	return "(" + to.str1 + " / " + to.str2 + ")"
+func (to *TatonnementOracle) ComputePrices(params ControlParams, prices map[orderbook.Asset]float64) {
+	to.Params = params
+	fmt.Println(to)
+	baselineDemand := to.MOrderbookManager.DemandQuery(prices)
+	fmt.Println(baselineDemand)
 }

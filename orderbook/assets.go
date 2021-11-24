@@ -1,5 +1,7 @@
 package orderbook
 
+import "fmt"
+
 type Asset string
 
 type AssetPair struct {
@@ -7,10 +9,13 @@ type AssetPair struct {
 	selling Asset
 }
 
-type AssetTx struct {
-	Type       string
-	Amount     uint64
-	LimitPrice uint64
+type SupplyDemandPair struct {
+	Supply float64
+	Demand float64
+}
+
+type SupplyDemand struct {
+	MSupplyDemand map[Asset]*SupplyDemandPair
 }
 
 func (ap *AssetPair) Buying() Asset {
@@ -31,4 +36,14 @@ func (ap *AssetPair) SetSelling(newSell Asset) {
 
 func (ap *AssetPair) String() string {
 	return "(" + string(ap.buying) + " / " + string(ap.selling) + ")"
+}
+
+func (sd *SupplyDemand) AddSupplyDemandPair(tradingPair AssetPair, amount float64) {
+	sd.AddSupplyDemand(tradingPair.selling, tradingPair.buying, amount)
+}
+
+func (sd *SupplyDemand) AddSupplyDemand(sell Asset, buy Asset, amount float64) {
+	fmt.Println(sd.MSupplyDemand[sell])
+	sd.MSupplyDemand[sell].Supply += amount
+	sd.MSupplyDemand[buy].Demand += amount
 }

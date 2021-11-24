@@ -15,17 +15,16 @@ func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookMan
 	obm := &orderbook.OrderbookManager{MOrderbooks: make(map[orderbook.AssetPair]orderbook.Orderbook)}
 	for i := 0; i < len(txs.Transactions); i++ {
 		var ap orderbook.AssetPair
-		ap.SetBuying(orderbook.Asset(txs.Transactions[i].BuyAsset.Type))
-		ap.SetSelling(orderbook.Asset(txs.Transactions[i].SellAsset.Type))
+		ap.SetBuying(orderbook.Asset(txs.Transactions[i].BuyType))
+		ap.SetSelling(orderbook.Asset(txs.Transactions[i].SellType))
 
 		// insert transaction into orderbook
 		var pcs orderbook.PriceCompStats
-		pcs.SellPrice = txs.Transactions[i].SellAsset.LimitPrice
-		pcs.BuyPrice = txs.Transactions[i].BuyAsset.LimitPrice
+		pcs.SellPrice = txs.Transactions[i].SellLimitPrice
 		pcs.Txid = txs.Transactions[i].Txid
-		pcs.CumulativeOfferedForSale = txs.Transactions[i].SellAsset.Amount
+		pcs.CumulativeOfferedForSale = txs.Transactions[i].SellAmount
 
-		if obval, ok := obm.MOrderbooks[ap]; ok {
+		if obval, ok := obm.MOrderbooks[ap]; ok { // if AssetPair already in OrderBookManager
 			pos := sort.Search(len(obval.MPrecomputedTatonnementData), func(i int) bool { return obval.MPrecomputedTatonnementData[i].SellPrice >= pcs.SellPrice })
 			newobval := make([]orderbook.PriceCompStats, len(obval.MPrecomputedTatonnementData)+1)
 			at := copy(newobval, obval.MPrecomputedTatonnementData[:pos])
@@ -34,12 +33,12 @@ func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookMan
 			copy(newobval[at:], obval.MPrecomputedTatonnementData[pos:])
 
 			for j := pos + 1; j < len(newobval); j++ {
-				newobval[j].CumulativeOfferedForSale += txs.Transactions[i].SellAsset.Amount
+				newobval[j].CumulativeOfferedForSale += txs.Transactions[i].SellAmount
 			}
 
 			newpcs := orderbook.Orderbook{MPrecomputedTatonnementData: newobval}
 			obm.MOrderbooks[ap] = newpcs
-		} else {
+		} else { // if AssetPair not already in OrderBookManager then add
 			var ob orderbook.Orderbook
 			ob.MPrecomputedTatonnementData = append(ob.MPrecomputedTatonnementData, pcs)
 			obm.MOrderbooks[ap] = ob
@@ -51,7 +50,15 @@ func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookMan
 func main() {
 
 	ms := new(tatonnement.TatonnementOracle)
-	fmt.Println(ms)
+
+	cp := tatonnement.ControlParams{MTaxRate: 1, MSmoothMult: 2, MMaxRounds: 3,
+		MMStepUp: 4, MMStepDown: 5, MStepSizeRadix: 6,
+		MStepRadix:   7,
+		MRoundNumber: 8}
+	prices := make(map[orderbook.Asset]float64)
+
+	prices["ETH"] = 4000
+	prices["USDT"] = 1
 
 	jsonFile, err := os.Open("test_cases/txs.json")
 	if err != nil {
@@ -66,6 +73,8 @@ func main() {
 	json.Unmarshal(byteValue, &txs)
 
 	obm := createOrderbookManager(&txs)
-	fmt.Println(obm.MOrderbooks)
+
+	ms.MOrderbookManager = *obm
+	ms.ComputePrices(cp, prices)
 
 }
