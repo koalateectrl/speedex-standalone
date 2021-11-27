@@ -36,6 +36,17 @@ Notes:
     2b) Will need to have 2 cumulative values in vector: cumulative amount and cumulative amoount * limit price offer
 
 
+To Do (Small Items):
+1) Change appropriate methods/variables from public to private and add getters/setters as needed.
+2) Check to make sure functions are taking pointers instead of underlying to save on memory
+3) Add in smoothing for demand curve using alpha
+4) Layout project as https://github.com/golang-standards/project-layout with appropriate folders, etc.
+5) Overflow/underflow (floats/ints?) - package: https://pkg.go.dev/github.com/shopspring/decimal
+6) Test cases
+7) Change step size to be a heuristic rather than a fixed number.
+8) Add Stopping criteria
+9) Add parallelism/multithreading for collecting transactions. Locks/mutexes accordingly. Then Mergesort them together.
 
-To Do:
-    LP Solver after Tatonnement
+To Do (Large Items):
+1) LP Solver after Tatonnement
+2) Create charts to get metrics on throughput with different trials

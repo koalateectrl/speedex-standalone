@@ -1,6 +1,8 @@
 package orderbook
 
-import "sort"
+import (
+	"sort"
+)
 
 type PriceCompStats struct {
 	SellPrice                float64
@@ -16,6 +18,9 @@ func (ob *Orderbook) CumulativeOfferedForSaleTimesPrice(sellPrice float64, buyPr
 	//TODO code for partial/full sells here
 	//TODO add code to price weight the offers
 	p := sellPrice / buyPrice
-	pos := sort.Search(len(ob.MPrecomputedTatonnementData), func(i int) bool { return ob.MPrecomputedTatonnementData[i].SellPrice >= p })
-	return ob.MPrecomputedTatonnementData[pos].CumulativeOfferedForSale
+	pos := sort.Search(len(ob.MPrecomputedTatonnementData), func(i int) bool { return ob.MPrecomputedTatonnementData[i].SellPrice > p })
+	if pos == 0 { // no limit price satisfies current price
+		return 0
+	}
+	return ob.MPrecomputedTatonnementData[pos-1].CumulativeOfferedForSale * sellPrice
 }

@@ -1,6 +1,6 @@
 package orderbook
 
-import "fmt"
+import "strconv"
 
 type Asset string
 
@@ -43,7 +43,25 @@ func (sd *SupplyDemand) AddSupplyDemandPair(tradingPair AssetPair, amount float6
 }
 
 func (sd *SupplyDemand) AddSupplyDemand(sell Asset, buy Asset, amount float64) {
-	fmt.Println(sd.MSupplyDemand[sell])
-	sd.MSupplyDemand[sell].Supply += amount
-	sd.MSupplyDemand[buy].Demand += amount
+	if _, found := sd.MSupplyDemand[sell]; found {
+		sd.MSupplyDemand[sell].Supply += amount
+	} else {
+		sd.MSupplyDemand[sell] = &SupplyDemandPair{amount, 0}
+	}
+
+	if _, found := sd.MSupplyDemand[buy]; found {
+		sd.MSupplyDemand[buy].Demand += amount
+	} else {
+		sd.MSupplyDemand[buy] = &SupplyDemandPair{0, amount}
+	}
+}
+
+func (sd *SupplyDemand) String() string {
+	retStr := "{"
+	for key, val := range sd.MSupplyDemand {
+		retStr += string(key) + ": ("
+		retStr += strconv.FormatFloat(val.Supply, 'f', -1, 64) + "," + strconv.FormatFloat(val.Demand, 'f', -1, 64) + "); "
+	}
+	retStr += "}"
+	return retStr
 }

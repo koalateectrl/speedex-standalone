@@ -12,7 +12,7 @@
       "buytype": "ETH",
       "selltype": "USDT",
       "sellamount": 39980,
-      "selllimitPrice": 0.0003
+      "selllimitPrice": 0.0002
     }, 
     {
       "txid": 3,

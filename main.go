@@ -51,13 +51,12 @@ func main() {
 
 	ms := new(tatonnement.TatonnementOracle)
 
-	cp := tatonnement.ControlParams{MTaxRate: 1, MSmoothMult: 2, MMaxRounds: 3,
-		MMStepUp: 4, MMStepDown: 5, MStepSizeRadix: 6,
-		MStepRadix:   7,
-		MRoundNumber: 8}
+	cp := tatonnement.ControlParams{MTaxRate: 0, MSmoothMult: 0, MMaxRounds: 1000,
+		MMStepUp: 0, MMStepDown: 0, MStepSizeRadix: 0,
+		MStepRadix: 0, MRoundNumber: 1}
 	prices := make(map[orderbook.Asset]float64)
 
-	prices["ETH"] = 4000
+	prices["ETH"] = 4500
 	prices["USDT"] = 1
 
 	jsonFile, err := os.Open("test_cases/txs.json")
