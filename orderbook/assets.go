@@ -1,6 +1,8 @@
 package orderbook
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type Asset string
 
@@ -54,6 +56,10 @@ func (sd *SupplyDemand) AddSupplyDemand(sell Asset, buy Asset, amount float64) {
 	} else {
 		sd.MSupplyDemand[buy] = &SupplyDemandPair{0, amount}
 	}
+}
+
+func (sd *SupplyDemand) GetDelta(asset Asset) float64 {
+	return sd.MSupplyDemand[asset].Demand - sd.MSupplyDemand[asset].Supply
 }
 
 func (sd *SupplyDemand) String() string {

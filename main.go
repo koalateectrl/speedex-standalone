@@ -51,9 +51,9 @@ func main() {
 
 	ms := new(tatonnement.TatonnementOracle)
 
-	cp := tatonnement.ControlParams{MTaxRate: 0, MSmoothMult: 0, MMaxRounds: 1000,
+	cp := tatonnement.ControlParams{MTaxRate: 0, MSmoothMult: 0, MMaxRounds: 10,
 		MMStepUp: 0, MMStepDown: 0, MStepSizeRadix: 0,
-		MStepRadix: 0, MRoundNumber: 1}
+		MStepRadix: 100000000, KStartingStepSize: 1, KPriceMin: 1, KPriceMax: 10000000, MRoundNumber: 1}
 	prices := make(map[orderbook.Asset]float64)
 
 	prices["ETH"] = 4500
