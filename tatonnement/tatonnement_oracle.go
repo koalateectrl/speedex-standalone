@@ -14,7 +14,7 @@ type TatonnementOracle struct {
 func (to *TatonnementOracle) ComputePrices(params ControlParams, prices map[orderbook.Asset]float64) {
 	to.Params = params
 	fmt.Println(to)
-	baselineDemand := to.MOrderbookManager.DemandQuery(prices)
+	baselineDemand := to.MOrderbookManager.DemandQuery(prices, to.Params.MSmoothMult)
 	fmt.Println(baselineDemand)
 
 	stepSize := to.Params.KStartingStepSize
@@ -23,7 +23,7 @@ func (to *TatonnementOracle) ComputePrices(params ControlParams, prices map[orde
 		to.Params.IncrementRound()
 		fmt.Println(prices)
 		trialPrices := to.Params.SetTrialPrices(prices, *baselineDemand, stepSize)
-		trialDemand := to.MOrderbookManager.DemandQuery(trialPrices)
+		trialDemand := to.MOrderbookManager.DemandQuery(trialPrices, to.Params.MSmoothMult)
 		prices = trialPrices
 		baselineDemand = trialDemand
 	}

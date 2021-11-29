@@ -23,6 +23,7 @@ func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookMan
 		pcs.SellPrice = txs.Transactions[i].SellLimitPrice
 		pcs.Txid = txs.Transactions[i].Txid
 		pcs.CumulativeOfferedForSale = txs.Transactions[i].SellAmount
+		pcs.CumulativeOfferedForSaleTimesPrice = txs.Transactions[i].SellAmount * txs.Transactions[i].SellLimitPrice
 
 		if obval, ok := obm.MOrderbooks[ap]; ok { // if AssetPair already in OrderBookManager
 			pos := sort.Search(len(obval.MPrecomputedTatonnementData), func(i int) bool { return obval.MPrecomputedTatonnementData[i].SellPrice >= pcs.SellPrice })
@@ -33,7 +34,8 @@ func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookMan
 			copy(newobval[at:], obval.MPrecomputedTatonnementData[pos:])
 
 			for j := pos + 1; j < len(newobval); j++ {
-				newobval[j].CumulativeOfferedForSale += txs.Transactions[i].SellAmount
+				newobval[j].CumulativeOfferedForSale += pcs.CumulativeOfferedForSale
+				newobval[j].CumulativeOfferedForSaleTimesPrice += pcs.CumulativeOfferedForSaleTimesPrice
 			}
 
 			newpcs := orderbook.Orderbook{MPrecomputedTatonnementData: newobval}
@@ -51,7 +53,7 @@ func main() {
 
 	ms := new(tatonnement.TatonnementOracle)
 
-	cp := tatonnement.ControlParams{MTaxRate: 0, MSmoothMult: 0, MMaxRounds: 10,
+	cp := tatonnement.ControlParams{MTaxRate: 0, MSmoothMult: 10, MMaxRounds: 3,
 		MMStepUp: 0, MMStepDown: 0, MStepSizeRadix: 0,
 		MStepRadix: 100000000, KStartingStepSize: 1, KPriceMin: 1, KPriceMax: 10000000, MRoundNumber: 1}
 	prices := make(map[orderbook.Asset]float64)

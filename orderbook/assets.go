@@ -11,6 +11,12 @@ type AssetPair struct {
 	selling Asset
 }
 
+/*
+type Price struct {
+	N float64 // numerator
+	D float64 // denominator
+} */
+
 type SupplyDemandPair struct {
 	Supply float64
 	Demand float64
