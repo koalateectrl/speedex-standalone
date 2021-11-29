@@ -1,6 +1,7 @@
 package orderbook
 
 import (
+	"math"
 	"strconv"
 )
 
@@ -24,6 +25,10 @@ type SupplyDemandPair struct {
 
 type SupplyDemand struct {
 	MSupplyDemand map[Asset]*SupplyDemandPair
+}
+
+type TatonnementObjectiveFunction struct {
+	Value float64
 }
 
 func (ap *AssetPair) Buying() Asset {
@@ -66,6 +71,19 @@ func (sd *SupplyDemand) AddSupplyDemand(sell Asset, buy Asset, amount float64) {
 
 func (sd *SupplyDemand) GetDelta(asset Asset) float64 {
 	return sd.MSupplyDemand[asset].Demand - sd.MSupplyDemand[asset].Supply
+}
+
+func (sd *SupplyDemand) GetObjective() *TatonnementObjectiveFunction {
+	return NewTatonnementObjectiveFunction(sd)
+}
+
+func NewTatonnementObjectiveFunction(supplyDemand *SupplyDemand) *TatonnementObjectiveFunction {
+	tof := new(TatonnementObjectiveFunction)
+	for _, sd := range supplyDemand.MSupplyDemand {
+		tof.Value += math.Pow(sd.Demand-sd.Supply, 2)
+	}
+
+	return tof
 }
 
 func (sd *SupplyDemand) String() string {

@@ -15,7 +15,9 @@ func (to *TatonnementOracle) ComputePrices(params ControlParams, prices map[orde
 	to.Params = params
 	fmt.Println(to)
 	baselineDemand := to.MOrderbookManager.DemandQuery(prices, to.Params.MSmoothMult)
+	baselineObjective := baselineDemand.GetObjective()
 	fmt.Println(baselineDemand)
+	fmt.Println(baselineObjective)
 
 	stepSize := to.Params.KStartingStepSize
 
