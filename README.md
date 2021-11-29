@@ -9,6 +9,8 @@ Stellar Implementation: https://github.com/gramseyer/stellar-core/blob/master/sr
 
 Simple Simplex LP Solver: https://github.com/gramseyer/stellar-core/tree/master/src/simplex
 
+Faster LP Solver: https://github.com/scslab/speedex/tree/master/simplex/
+
 Tatonnement
 
 1) Collect DB of transactions for a given block
