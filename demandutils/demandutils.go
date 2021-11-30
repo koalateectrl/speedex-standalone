@@ -46,6 +46,15 @@ func (sd *SupplyDemand) GetObjective() *TatonnementObjectiveFunction {
 	return NewTatonnementObjectiveFunction(sd)
 }
 
+func NewTatonnementObjectiveFunction(supplyDemand *SupplyDemand) *TatonnementObjectiveFunction {
+	tof := new(TatonnementObjectiveFunction)
+	for _, sd := range supplyDemand.MSupplyDemand {
+		tof.Value += math.Pow(sd.Demand-sd.Supply, 2)
+	}
+
+	return tof
+}
+
 func (sd *SupplyDemand) String() string {
 	retStr := "{"
 	for key, val := range sd.MSupplyDemand {
@@ -54,13 +63,4 @@ func (sd *SupplyDemand) String() string {
 	}
 	retStr += "}"
 	return retStr
-}
-
-func NewTatonnementObjectiveFunction(supplyDemand *SupplyDemand) *TatonnementObjectiveFunction {
-	tof := new(TatonnementObjectiveFunction)
-	for _, sd := range supplyDemand.MSupplyDemand {
-		tof.Value += math.Pow(sd.Demand-sd.Supply, 2)
-	}
-
-	return tof
 }

@@ -16,16 +16,16 @@ type Orderbook struct {
 }
 
 func (ob *Orderbook) GetPriceCompStats(sellPrice float64, buyPrice float64) PriceCompStats {
-	// TODO insert condition when vector is empty to return zero stats
-	var start uint8 = 0
+	// first entry of the data is the entry where sellPrice is 0
+	if len(ob.MPrecomputedTatonnementData) == 1 {
+		return ob.MPrecomputedTatonnementData[0]
+	}
+
+	var start uint8 = 1
 	var end uint8 = uint8(len(ob.MPrecomputedTatonnementData) - 1)
 
 	if ob.MPrecomputedTatonnementData[end].SellPrice <= sellPrice/buyPrice {
 		return ob.MPrecomputedTatonnementData[end]
-	}
-
-	if sellPrice/buyPrice <= ob.MPrecomputedTatonnementData[start].SellPrice {
-		return PriceCompStats{SellPrice: 0, CumulativeOfferedForSale: 0, CumulativeOfferedForSaleTimesPrice: 0}
 	}
 
 	// binary search

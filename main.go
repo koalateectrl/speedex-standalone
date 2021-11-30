@@ -43,6 +43,8 @@ func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookMan
 			obm.MOrderbooks[ap] = newpcs
 		} else { // if AssetPair not already in OrderBookManager then add
 			var ob orderbook.Orderbook
+			// start with 0 price entry
+			ob.MPrecomputedTatonnementData = append(ob.MPrecomputedTatonnementData, orderbook.PriceCompStats{SellPrice: 0, CumulativeOfferedForSale: 0, CumulativeOfferedForSaleTimesPrice: 0})
 			ob.MPrecomputedTatonnementData = append(ob.MPrecomputedTatonnementData, pcs)
 			obm.MOrderbooks[ap] = ob
 		}
@@ -55,7 +57,7 @@ func main() {
 	ms := new(tatonnement.TatonnementOracle)
 
 	cp := tatonnement.TatonnementControlParams{MSmoothMult: 10, MMaxRounds: 3,
-		MStepUp: 0, MStepDown: 0, MStepSizeRadix: 5, MStepRadix: 64}
+		MStepUp: 40, MStepDown: 25, MStepSizeRadix: 5, MStepRadix: 30}
 	prices := make(map[assets.Asset]float64)
 
 	prices["ETH"] = 4500

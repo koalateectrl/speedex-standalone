@@ -33,25 +33,43 @@ func NewTatonnementControlParamsWrapper(tcp *TatonnementControlParams) *Tatonnem
 	return tcpw
 }
 
-func (cp *TatonnementControlParamsWrapper) IncrementRound() {
-	cp.MRoundNumber++
+func (tcpw *TatonnementControlParamsWrapper) GetRoundNumber() uint32 {
+	return tcpw.MRoundNumber
 }
 
-func (cp *TatonnementControlParamsWrapper) Done() bool {
-	return cp.MRoundNumber >= cp.MParams.MMaxRounds
+func (tcpw *TatonnementControlParamsWrapper) GetSmoothMult() uint8 {
+	return tcpw.MParams.MSmoothMult
 }
 
-func (cp *TatonnementControlParamsWrapper) ImposePriceBounds(candidate float64) float64 {
-	if candidate > cp.KPriceMax {
-		return cp.KPriceMax
+func (tcpw *TatonnementControlParamsWrapper) IncrementRound() {
+	tcpw.MRoundNumber++
+}
+
+func (tcpw *TatonnementControlParamsWrapper) Done() bool {
+	return tcpw.MRoundNumber >= tcpw.MParams.MMaxRounds
+}
+
+func (tcpw *TatonnementControlParamsWrapper) ImposePriceBounds(candidate float64) float64 {
+	if candidate > tcpw.KPriceMax {
+		return tcpw.KPriceMax
 	}
-	if candidate < cp.KPriceMin {
-		return cp.KPriceMin
+	if candidate < tcpw.KPriceMin {
+		return tcpw.KPriceMin
 	}
 	return candidate
 }
 
-func (cp *TatonnementControlParamsWrapper) SetTrialPrice(curPrice float64, demand float64, stepSize float64) float64 {
+func (tcpw *TatonnementControlParamsWrapper) StepUp(step float64) float64 {
+	out := step * float64(tcpw.MParams.MStepUp) * math.Pow(2, -float64(tcpw.MParams.MStepSizeRadix))
+	return out
+}
+
+func (tcpw *TatonnementControlParamsWrapper) StepDown(step float64) float64 {
+	out := step * float64(tcpw.MParams.MStepDown) * math.Pow(2, -float64(tcpw.MParams.MStepSizeRadix))
+	return out
+}
+
+func (tcpw *TatonnementControlParamsWrapper) SetTrialPrice(curPrice float64, demand float64, stepSize float64) float64 {
 	// set price for one asset
 	stepTimesOldPrice := curPrice * stepSize
 
@@ -71,7 +89,7 @@ func (cp *TatonnementControlParamsWrapper) SetTrialPrice(curPrice float64, deman
 
 	product := stepTimesOldPrice * unsignedDemand
 
-	delta := product / cp.MParams.MStepRadix
+	delta := product * math.Pow(2, -float64(tcpw.MParams.MStepRadix))
 
 	var candidateOut float64
 	if sign > 0 {
@@ -86,8 +104,7 @@ func (cp *TatonnementControlParamsWrapper) SetTrialPrice(curPrice float64, deman
 			candidateOut = 0
 		}
 	}
-
-	return cp.ImposePriceBounds(candidateOut)
+	return tcpw.ImposePriceBounds(candidateOut)
 }
 
 func (cp *TatonnementControlParamsWrapper) SetTrialPrices(curPrices map[assets.Asset]float64, demands demandutils.SupplyDemand, stepSize float64) map[assets.Asset]float64 {
@@ -98,14 +115,4 @@ func (cp *TatonnementControlParamsWrapper) SetTrialPrices(curPrices map[assets.A
 	}
 
 	return pricesOut
-}
-
-func (cp *TatonnementControlParamsWrapper) StepUp(step float64) float64 {
-	out := step * float64(cp.MParams.MStepUp)
-	return out
-}
-
-func (cp *TatonnementControlParamsWrapper) StepDown(step float64) float64 {
-	out := step * float64(cp.MParams.MStepDown)
-	return out
 }
