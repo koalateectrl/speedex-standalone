@@ -7,9 +7,9 @@ import (
 	"os"
 	"sort"
 
-	"github.com/sandymule/speedex-standalone/assets"
-	"github.com/sandymule/speedex-standalone/orderbook"
-	"github.com/sandymule/speedex-standalone/tatonnement"
+	"github.com/sandymule/speedex-standalone/pkg/assets"
+	"github.com/sandymule/speedex-standalone/pkg/orderbook"
+	"github.com/sandymule/speedex-standalone/pkg/tatonnement"
 )
 
 func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookManager {
@@ -63,7 +63,7 @@ func main() {
 	prices["ETH"] = 4500
 	prices["USDT"] = 1
 
-	jsonFile, err := os.Open("test_cases/txs.json")
+	jsonFile, err := os.Open("../test_cases/txs.json")
 	if err != nil {
 		fmt.Println(err)
 	}

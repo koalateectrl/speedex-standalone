@@ -4,7 +4,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/sandymule/speedex-standalone/assets"
+	"github.com/sandymule/speedex-standalone/pkg/assets"
 )
 
 type SupplyDemandPair struct {

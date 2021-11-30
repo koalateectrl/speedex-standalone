@@ -1,8 +1,8 @@
 package orderbook
 
 import (
-	"github.com/sandymule/speedex-standalone/assets"
-	"github.com/sandymule/speedex-standalone/demandutils"
+	"github.com/sandymule/speedex-standalone/pkg/assets"
+	"github.com/sandymule/speedex-standalone/pkg/demandutils"
 )
 
 type OrderbookManager struct {

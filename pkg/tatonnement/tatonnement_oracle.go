@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/sandymule/speedex-standalone/assets"
-	"github.com/sandymule/speedex-standalone/orderbook"
+	"github.com/sandymule/speedex-standalone/pkg/assets"
+	"github.com/sandymule/speedex-standalone/pkg/orderbook"
 )
 
 type TatonnementOracle struct {

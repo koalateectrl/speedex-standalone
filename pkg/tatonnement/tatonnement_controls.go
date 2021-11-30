@@ -3,8 +3,8 @@ package tatonnement
 import (
 	"math"
 
-	"github.com/sandymule/speedex-standalone/assets"
-	"github.com/sandymule/speedex-standalone/demandutils"
+	"github.com/sandymule/speedex-standalone/pkg/assets"
+	"github.com/sandymule/speedex-standalone/pkg/demandutils"
 )
 
 type TatonnementControlParams struct {
@@ -73,17 +73,10 @@ func (tcpw *TatonnementControlParamsWrapper) SetTrialPrice(curPrice float64, dem
 	// set price for one asset
 	stepTimesOldPrice := curPrice * stepSize
 
-	var sign int8
-	if demand > 0 {
-		sign = 1
-	} else {
+	var sign int8 = 1
+	var unsignedDemand float64 = demand
+	if demand <= 0 {
 		sign = -1
-	}
-
-	var unsignedDemand float64
-	if demand > 0 {
-		unsignedDemand = demand
-	} else {
 		unsignedDemand = -demand
 	}
 
@@ -107,11 +100,11 @@ func (tcpw *TatonnementControlParamsWrapper) SetTrialPrice(curPrice float64, dem
 	return tcpw.ImposePriceBounds(candidateOut)
 }
 
-func (cp *TatonnementControlParamsWrapper) SetTrialPrices(curPrices map[assets.Asset]float64, demands demandutils.SupplyDemand, stepSize float64) map[assets.Asset]float64 {
+func (tcpw *TatonnementControlParamsWrapper) SetTrialPrices(curPrices map[assets.Asset]float64, demands demandutils.SupplyDemand, stepSize float64) map[assets.Asset]float64 {
 	// set prices for all assets
 	pricesOut := make(map[assets.Asset]float64)
 	for asset, curPrice := range curPrices {
-		pricesOut[asset] = cp.SetTrialPrice(curPrice, demands.GetDelta(asset), stepSize)
+		pricesOut[asset] = tcpw.SetTrialPrice(curPrice, demands.GetDelta(asset), stepSize)
 	}
 
 	return pricesOut
