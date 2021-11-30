@@ -7,16 +7,17 @@ import (
 	"os"
 	"sort"
 
+	"github.com/sandymule/speedex-standalone/assets"
 	"github.com/sandymule/speedex-standalone/orderbook"
 	"github.com/sandymule/speedex-standalone/tatonnement"
 )
 
 func createOrderbookManager(txs *orderbook.Transactions) *orderbook.OrderbookManager {
-	obm := &orderbook.OrderbookManager{MOrderbooks: make(map[orderbook.AssetPair]orderbook.Orderbook)}
+	obm := &orderbook.OrderbookManager{MOrderbooks: make(map[assets.AssetPair]orderbook.Orderbook)}
 	for i := 0; i < len(txs.Transactions); i++ {
-		var ap orderbook.AssetPair
-		ap.SetBuying(orderbook.Asset(txs.Transactions[i].BuyType))
-		ap.SetSelling(orderbook.Asset(txs.Transactions[i].SellType))
+		var ap assets.AssetPair
+		ap.SetBuying(assets.Asset(txs.Transactions[i].BuyType))
+		ap.SetSelling(assets.Asset(txs.Transactions[i].SellType))
 
 		// insert transaction into orderbook
 		var pcs orderbook.PriceCompStats
@@ -53,10 +54,9 @@ func main() {
 
 	ms := new(tatonnement.TatonnementOracle)
 
-	cp := tatonnement.ControlParams{MTaxRate: 0, MSmoothMult: 10, MMaxRounds: 3,
-		MMStepUp: 0, MMStepDown: 0, MStepSizeRadix: 0,
-		MStepRadix: 100000000, KStartingStepSize: 1, KPriceMin: 1, KPriceMax: 10000000, MRoundNumber: 1}
-	prices := make(map[orderbook.Asset]float64)
+	cp := tatonnement.TatonnementControlParams{MSmoothMult: 10, MMaxRounds: 3,
+		MStepUp: 0, MStepDown: 0, MStepSizeRadix: 5, MStepRadix: 64}
+	prices := make(map[assets.Asset]float64)
 
 	prices["ETH"] = 4500
 	prices["USDT"] = 1
@@ -76,6 +76,6 @@ func main() {
 	obm := createOrderbookManager(&txs)
 
 	ms.MOrderbookManager = *obm
-	ms.ComputePrices(cp, prices)
+	ms.ComputePrices(cp, prices, 1)
 
 }
