@@ -56,7 +56,7 @@ func main() {
 
 	ms := new(tatonnement.TatonnementOracle)
 
-	cp := tatonnement.TatonnementControlParams{MSmoothMult: 10, MMaxRounds: 3,
+	cp := tatonnement.TatonnementControlParams{MSmoothMult: 5, MMaxRounds: 50,
 		MStepUp: 40, MStepDown: 25, MStepSizeRadix: 5, MStepRadix: 30}
 	prices := make(map[assets.Asset]float64)
 
@@ -78,6 +78,6 @@ func main() {
 	obm := createOrderbookManager(&txs)
 
 	ms.MOrderbookManager = *obm
-	ms.ComputePrices(cp, prices, 1)
+	ms.ComputePrices(cp, prices, 5)
 
 }
